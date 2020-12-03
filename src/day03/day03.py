@@ -1,4 +1,5 @@
 import numpy as np
+import functools
 
 
 def part01(matrix):
@@ -7,12 +8,15 @@ def part01(matrix):
 
 
 def part02(matrix):
-    solution = 1
     slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
 
-    for right, down in slopes:
-        tree_count = compute_trees(matrix, right, down)
-        solution = solution * tree_count
+    trees = \
+        list(
+            map(lambda slope:
+                compute_trees(
+                    matrix, slope[0], slope[1]), slopes))
+
+    solution = functools.reduce(lambda x, y: x*y, trees)
 
     print("Part02 solution: {solution}".format(solution=solution))
 
