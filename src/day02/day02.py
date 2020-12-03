@@ -5,7 +5,7 @@ def part01(lines):
     valid_passwords = 0
 
     for line in lines:
-        password, lower_bound, character, upper_bound = extract_parameters(
+        lower_bound, upper_bound, character, password = extract_parameters(
             line)
 
         occurences = password.count(character)
@@ -21,7 +21,7 @@ def part02(lines):
     valid_passwords = 0
 
     for line in lines:
-        password, first_position, character, second_position = extract_parameters(
+        first_position, second_position, character, password = extract_parameters(
             line)
 
         if password[first_position-1] == character or password[second_position-1] == character:
@@ -38,7 +38,7 @@ def extract_parameters(line):
     second_position = int(search_result.group(2))
     character = search_result.group(3)
     password = search_result.group(4)
-    return password, first_position, character, second_position
+    return first_position, second_position, character, password
 
 
 if __name__ == "__main__":
