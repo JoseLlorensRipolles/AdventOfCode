@@ -2,29 +2,37 @@ import re
 import itertools
 from typing import Optional
 
+FIELDS_NAMES = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
+
 
 def part01(passports):
-    solution = 0
-    fields_names = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
 
-    for passport in passports:
-        is_valid = all(
-            map(lambda x: x in passport, fields_names))
-        if is_valid:
-            solution += 1
+    def is_valid_passport(passport):
+        return \
+            all(
+                map(lambda field: field in passport, FIELDS_NAMES))
+
+    solution = \
+        sum(
+            map(is_valid_passport, passports)
+        )
 
     print("Part01 solution: {solution}".format(solution=solution))
 
 
 def part02(passports):
-    solution = 0
 
-    for passport in passports:
-        fields_names = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
-        is_valid = all(
-            map(lambda x: validate_field(x, passport), fields_names))
-        if is_valid:
-            solution += 1
+    def is_valid_passport(passport):
+        return \
+            all(
+                map(lambda field: validate_field(
+                    field, passport), FIELDS_NAMES)
+            )
+
+    solution = \
+        sum(
+            map(is_valid_passport, passports)
+        )
 
     print("Part02 solution: {solution}".format(solution=solution))
 
