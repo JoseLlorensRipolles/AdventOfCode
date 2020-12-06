@@ -28,7 +28,7 @@ def part02(lines):
             if password[first_position-1] != password[second_position-1]:
                 valid_passwords += 1
 
-    print("Solution for part 01: {valid_passwords}".format(
+    print("Solution for part 02: {valid_passwords}".format(
         valid_passwords=valid_passwords))
 
 
@@ -42,7 +42,7 @@ def extract_parameters(line):
 
 
 if __name__ == "__main__":
-    with open("input.txt", "r") as f:
+    with open("resources/input02.txt", "r") as f:
         lines = f.read().splitlines()
 
     part01(lines)

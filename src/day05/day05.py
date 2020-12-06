@@ -37,7 +37,7 @@ def decode_seat(encoded_seat):
 
 
 if __name__ == "__main__":
-    with open("input.txt", "r") as f:
+    with open("resources/input05.txt", "r") as f:
         lines = f.read().splitlines()
 
     part01(lines)

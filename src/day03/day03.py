@@ -32,7 +32,7 @@ def compute_trees(matrix, right, down):
 
 
 if __name__ == "__main__":
-    with open("input.txt", "r") as f:
+    with open("resources/input03.txt", "r") as f:
         lines = f.read().splitlines()
 
     matrix = np.array(list(lines[0]))

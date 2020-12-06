@@ -108,7 +108,7 @@ def get_field(field, text) -> Optional[str]:
 
 
 if __name__ == "__main__":
-    with open("input.txt", "r") as f:
+    with open("resources/input04.txt", "r") as f:
         lines = f.read().split('\n\n')
 
     passports = list(map(lambda line: line.replace("\n", " "), lines))
