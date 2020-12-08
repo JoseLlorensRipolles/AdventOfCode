@@ -15,20 +15,21 @@ def part01(program):
 
 def part02(program):
     ops_to_replace = [OpCode.NOP, OpCode.JMP]
+
     op_literals = {
-        OpCode.NOP: 'nop', OpCode.JMP: 'jmp'}
+        OpCode.NOP: 'nop',
+        OpCode.JMP: 'jmp'}
+
     op_replacements = {
-        OpCode.NOP: 'jmp', OpCode.JMP: 'nop'}
+        OpCode.NOP: 'jmp',
+        OpCode.JMP: 'nop'}
 
-    for op_to_replace in ops_to_replace:
-        replacement_index = 0
-        while replacement_index != -1:
-            replacement_index = get_next_replacement_index(
-                program, replacement_index, op_to_replace)
+    for index in range(len(program)):
+        op_code, _ = decode_instruction(program[index])
 
+        if op_code in ops_to_replace:
             modified_program = modify_program(
-                program, replacement_index, op_literals, op_to_replace, op_replacements)
-
+                program, index, op_code, op_literals, op_replacements)
             check_program(modified_program)
 
 
@@ -40,19 +41,11 @@ def check_program(modified_program):
         exit()
 
 
-def modify_program(program, replacement_index, op_literals, op_to_replace, op_replacements):
+def modify_program(program, replacement_index, op_to_replace, op_literals, op_replacements):
     modified_program = program.copy()
     modified_program[replacement_index] = modified_program[replacement_index].replace(
         op_literals[op_to_replace], op_replacements[op_to_replace])
     return modified_program
-
-
-def get_next_replacement_index(program, last_index_replaced, opertation_code):
-    for index in range(last_index_replaced + 1, len(program)):
-        op_code, _ = decode_instruction(program[index])
-        if op_code == opertation_code:
-            return index
-    return -1
 
 
 def execute_program(program):
