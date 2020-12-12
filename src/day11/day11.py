@@ -8,13 +8,14 @@ def part01(matrix):
         new_matrix = matrix.copy()
         for row in range(matrix.shape[0]):
             for col in range(matrix.shape[1]):
-                ocupied_adjacent = get_occupied_adjacent(matrix, row, col)
-                if matrix[row][col] == 'L' and ocupied_adjacent == 0:
-                    new_matrix[row][col] = '#'
-                    stable = False
-                elif matrix[row][col] == '#' and ocupied_adjacent >= 4:
-                    new_matrix[row][col] = 'L'
-                    stable = False
+                if matrix[row][col] != '.':
+                    ocupied_adjacent = get_occupied_adjacent(matrix, row, col)
+                    if matrix[row][col] == 'L' and ocupied_adjacent == 0:
+                        new_matrix[row][col] = '#'
+                        stable = False
+                    elif matrix[row][col] == '#' and ocupied_adjacent >= 4:
+                        new_matrix[row][col] = 'L'
+                        stable = False
         matrix = new_matrix
     print(np.count_nonzero(matrix == '#'))
 
@@ -26,13 +27,14 @@ def part02(matrix):
         new_matrix = matrix.copy()
         for row in range(matrix.shape[0]):
             for col in range(matrix.shape[1]):
-                ocupied_visible = get_occupied_visible(matrix, row, col)
-                if matrix[row][col] == 'L' and ocupied_visible == 0:
-                    new_matrix[row][col] = '#'
-                    stable = False
-                elif matrix[row][col] == '#' and ocupied_visible >= 5:
-                    new_matrix[row][col] = 'L'
-                    stable = False
+                if matrix[row][col] != '.':
+                    ocupied_visible = get_occupied_visible(matrix, row, col)
+                    if matrix[row][col] == 'L' and ocupied_visible == 0:
+                        new_matrix[row][col] = '#'
+                        stable = False
+                    elif matrix[row][col] == '#' and ocupied_visible >= 5:
+                        new_matrix[row][col] = 'L'
+                        stable = False
         matrix = new_matrix
     print(np.count_nonzero(matrix == '#'))
 
