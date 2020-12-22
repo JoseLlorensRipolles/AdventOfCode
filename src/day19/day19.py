@@ -46,10 +46,9 @@ def get_valid_messages(rules):
                             transformed = True
                             for leaf_value in dag[leaf]:
                                 pattern_copy = pattern.copy()
-                                while leaf in pattern_copy:
-                                    index = pattern_copy.index(leaf)
-                                    pattern_copy = pattern_copy[:index] + \
-                                        leaf_value+pattern_copy[index+1:]
+                                index = pattern_copy.index(leaf)
+                                pattern_copy = pattern_copy[:index] + \
+                                    leaf_value+pattern_copy[index+1:]
                                 new_values.append(pattern_copy)
                             break
                     if not transformed:
