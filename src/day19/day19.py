@@ -17,28 +17,44 @@ def get_dag(lines):
     return dag, leaves
 
 
-def part01(lines):
+def part01(rules, messages):
 
-    dag, leaves = get_dag(lines)
+    res = 0
+    valid_messages = get_valid_messages(rules)
+    print(len(valid_messages))
+    for message in messages:
+        for valid_message in valid_messages:
+            valid = False
+            if message == valid_message:
+                res += 1
+                valid = True
+                break
+
+    print(res)
+
+
+def get_valid_messages(rules):
+    dag, leaves = get_dag(rules)
     while(True):
         for key, value in dag.items():
-            new_values = []
-            for pattern in value:
-                transformed = False
-                for leaf in leaves:
-                    if leaf in pattern:
-                        transformed = True
-                        for leaf_value in dag[leaf]:
-                            pattern_copy = pattern.copy()
-                            while leaf in pattern_copy:
-                                index = pattern_copy.index(leaf)
-                                pattern_copy = pattern_copy[:index] + \
-                                    leaf_value+pattern_copy[index+1:]
-                            new_values.append(pattern_copy)
-                        break
-                if not transformed:
-                    new_values.append(pattern)
-            dag[key] = new_values
+            if key not in leaves:
+                new_values = []
+                for pattern in value:
+                    transformed = False
+                    for leaf in leaves:
+                        if leaf in pattern:
+                            transformed = True
+                            for leaf_value in dag[leaf]:
+                                pattern_copy = pattern.copy()
+                                while leaf in pattern_copy:
+                                    index = pattern_copy.index(leaf)
+                                    pattern_copy = pattern_copy[:index] + \
+                                        leaf_value+pattern_copy[index+1:]
+                                new_values.append(pattern_copy)
+                            break
+                    if not transformed:
+                        new_values.append(pattern)
+                dag[key] = new_values
 
         for key, value in dag.items():
             is_alpha = True
@@ -49,12 +65,14 @@ def part01(lines):
                 leaves.add(key)
 
         if '0' in leaves:
-            print('A')
-            pass
+            return ["".join(a) for a in dag['0']]
 
 
 if __name__ == "__main__":
     with open("resources/input19.txt", "r") as f:
-        lines = f.read().splitlines()
+        puzzle_input = f.read().split('\n\n')
 
-    part01(lines)
+    rules = puzzle_input[0].splitlines()
+    messages = puzzle_input[1].splitlines()
+
+    part01(rules, messages)
