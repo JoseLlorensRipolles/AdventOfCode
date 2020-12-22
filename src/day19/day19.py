@@ -17,24 +17,7 @@ def get_dag(lines):
     return dag, leaves
 
 
-def part01(rules, messages):
-
-    res = 0
-    valid_messages = get_valid_messages(rules)
-    print(len(valid_messages))
-    for message in messages:
-        for valid_message in valid_messages:
-            valid = False
-            if message == valid_message:
-                res += 1
-                valid = True
-                break
-
-    print(res)
-
-
-def get_valid_messages(rules):
-    dag, leaves = get_dag(rules)
+def get_valid_messages(dag, leaves):
     while(True):
         for key, value in dag.items():
             if key not in leaves:
@@ -55,16 +38,38 @@ def get_valid_messages(rules):
                         new_values.append(pattern)
                 dag[key] = new_values
 
-        for key, value in dag.items():
-            is_alpha = True
-            for pattern in value:
-                is_alpha = is_alpha and "".join(pattern).isalpha()
-
-            if is_alpha:
+        non_leaves = set(dag.keys()).difference(leaves)
+        for key in non_leaves:
+            if is_leaf(key, dag):
                 leaves.add(key)
 
         if '0' in leaves:
             return ["".join(a) for a in dag['0']]
+
+
+def is_leaf(key, dag):
+    patterns = dag[key]
+    is_alpha = True
+    leaf_characters = r"^[ab\*\(\)]*$"
+    for pattern in patterns:
+        is_alpha = is_alpha and re.compile(
+            leaf_characters).match("".join(pattern))
+    return is_alpha
+
+
+def part01(rules, messages):
+
+    res = 0
+    dag, leaves = get_dag(rules)
+    valid_messages = get_valid_messages(dag, leaves)
+    print(len(valid_messages))
+    for message in messages:
+        for valid_message in valid_messages:
+            if message == valid_message:
+                res += 1
+                break
+
+    print(res)
 
 
 if __name__ == "__main__":
@@ -75,3 +80,4 @@ if __name__ == "__main__":
     messages = puzzle_input[1].splitlines()
 
     part01(rules, messages)
+    part02(rules, messages)
