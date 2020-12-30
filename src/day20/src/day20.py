@@ -37,7 +37,8 @@ def part02(tiles_text):
     puzzle = assemple_puzzle(tiles, tiles_by_id, any_corner)
     image = build_image(tiles_by_id, puzzle)
     images = rotate_and_flip_image(image)
-    print(puzzle)
+    response = compute_roughness(images)
+    print(response)
 
 
 def get_any_corner(tiles):
@@ -111,6 +112,37 @@ def rotate_and_flip_image(image):
         images.append(image)
 
     return images
+
+
+def compute_roughness(images):
+    pattern_text = "                  # \n#    ##    ##    ###\n #  #  #  #  #  #   "
+    pattern = np.array([list(x) for x in pattern_text.splitlines()])
+    pattern_heigh = pattern.shape[0]
+    pattern_width = pattern.shape[1]
+
+    image_heigh = images[0].shape[0]
+    image_width = images[0].shape[1]
+
+    for image in images:
+        is_monster_image = False
+        for row in range(image_heigh-pattern_heigh + 1):
+            for col in range(image_width - pattern_width + 1):
+                is_monster_window = True
+                for pattern_row in range(pattern_heigh):
+                    for pattern_col in range(pattern_width):
+                        if pattern[pattern_row, pattern_col] == "#":
+                            if image[row+pattern_row, col+pattern_col] != "#":
+                                is_monster_window = False
+
+                if is_monster_window:
+                    is_monster_image = True
+                    for pattern_row in range(pattern_heigh):
+                        for pattern_col in range(pattern_width):
+                            if pattern[pattern_row, pattern_col] == "#":
+                                image[row+pattern_row, col+pattern_col] = "O"
+
+        if is_monster_image:
+            return (image == '#').sum()
 
 
 if __name__ == "__main__":
