@@ -3,6 +3,19 @@ import numpy as np
 import math
 
 
+def part01(tiles_by_id, puzzle):
+    limit = int(math.sqrt(len(tiles)))-1
+    print(int(puzzle[0, 0] * puzzle[limit, 0] *
+              puzzle[0, limit] * puzzle[limit, limit]))
+
+
+def part02(tiles_by_id, puzzle):
+    image = build_image(tiles_by_id, puzzle)
+    images = rotate_and_flip_image(image)
+    response = compute_roughness(images)
+    print(response)
+
+
 def is_corner(position, tiles, tile_id):
     for tile in tiles:
         if tile.id != tile_id:
@@ -12,33 +25,6 @@ def is_corner(position, tiles, tile_id):
                     return False
 
     return True
-
-
-def part01(tiles_text):
-    tiles = list()
-    for tile_text in tiles_text:
-        tiles.append(Tile(tile_text))
-
-    tiles_by_id = {tile.id: tile for tile in tiles}
-    any_corner = get_any_corner(tiles)
-    limit = int(math.sqrt(len(tiles)))-1
-    puzzle = assemple_puzzle(tiles, tiles_by_id, any_corner)
-    print(int(puzzle[0, 0] * puzzle[limit, 0] *
-              puzzle[0, limit] * puzzle[limit, limit]))
-
-
-def part02(tiles_text):
-    tiles = list()
-    for tile_text in tiles_text:
-        tiles.append(Tile(tile_text))
-
-    tiles_by_id = {tile.id: tile for tile in tiles}
-    any_corner = get_any_corner(tiles)
-    puzzle = assemple_puzzle(tiles, tiles_by_id, any_corner)
-    image = build_image(tiles_by_id, puzzle)
-    images = rotate_and_flip_image(image)
-    response = compute_roughness(images)
-    print(response)
 
 
 def get_any_corner(tiles):
@@ -149,5 +135,13 @@ if __name__ == "__main__":
     with open("resources/input20.txt", "r") as f:
         tiles_text = f.read().split('\n\n')
 
-    part01(tiles_text)
-    part02(tiles_text)
+    tiles = list()
+    for tile_text in tiles_text:
+        tiles.append(Tile(tile_text))
+
+    tiles_by_id = {tile.id: tile for tile in tiles}
+    any_corner = get_any_corner(tiles)
+    puzzle = assemple_puzzle(tiles, tiles_by_id, any_corner)
+
+    part01(tiles_by_id, puzzle)
+    part02(tiles_by_id, puzzle)
