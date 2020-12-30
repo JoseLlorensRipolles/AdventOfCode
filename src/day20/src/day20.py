@@ -19,14 +19,12 @@ def part01(tiles_text):
     for tile_text in tiles_text:
         tiles.append(Tile(tile_text))
 
-    result = 1
-    for tile in tiles:
-        for position in tile.positions:
-            if is_corner(position, tiles, tile.id):
-                result *= int(tile.id)
-                break
-
-    print(result)
+    tiles_by_id = {tile.id: tile for tile in tiles}
+    any_corner = get_any_corner(tiles)
+    limit = int(math.sqrt(len(tiles)))-1
+    puzzle = assemple_puzzle(tiles, tiles_by_id, any_corner)
+    print(int(puzzle[0, 0] * puzzle[limit, 0] *
+              puzzle[0, limit] * puzzle[limit, limit]))
 
 
 def part02(tiles_text):
@@ -34,6 +32,15 @@ def part02(tiles_text):
     for tile_text in tiles_text:
         tiles.append(Tile(tile_text))
 
+    tiles_by_id = {tile.id: tile for tile in tiles}
+    any_corner = get_any_corner(tiles)
+    puzzle = assemple_puzzle(tiles, tiles_by_id, any_corner)
+    image = build_image(tiles_by_id, puzzle)
+    images = rotate_and_flip_image(image)
+    print(puzzle)
+
+
+def get_any_corner(tiles):
     first_corner = None
     for tile in tiles:
         for position in tile.positions:
@@ -42,50 +49,32 @@ def part02(tiles_text):
                 tile.set_position = position
         if first_corner:
             break
+    return first_corner
 
+
+def assemple_puzzle(tiles, tiles_by_id, first_corner):
+    tiles = tiles_by_id.values()
     l = int(math.sqrt(len(tiles)))
-    tiles_by_id = {tile.id: tile for tile in tiles}
+
     remaining_tiles = set(tiles)
     remaining_tiles.remove(first_corner)
     puzzle = np.zeros((l, l))
     puzzle[0, 0] = first_corner.id
 
-    for col in range(1, l):
-        for tile in remaining_tiles:
-            position_on_left = tiles_by_id[puzzle[0, col-1]].set_position
-            for position in tile.positions:
-                found = False
-                if np.array_equal(position_on_left.right, position.left):
-                    tile.set_position = position
-                    remaining_tiles.remove(tile)
-                    puzzle[0, col] = tile.id
-                    found = True
-                    break
-            if found:
-                break
-
-    for row in range(1, l):
-        for tile in remaining_tiles:
-            position_on_top = tiles_by_id[puzzle[row-1, 0]].set_position
-            for position in tile.positions:
-                found = False
-                if np.array_equal(position_on_top.bot, position.top):
-                    tile.set_position = position
-                    remaining_tiles.remove(tile)
-                    puzzle[row, 0] = tile.id
-                    found = True
-                    break
-            if found:
-                break
-
-        for col in range(1, l):
+    for row in range(l):
+        for col in range(l):
             for tile in remaining_tiles:
-                position_on_top = tiles_by_id[puzzle[row-1, col]].set_position
-                position_on_left = tiles_by_id[puzzle[row, col-1]].set_position
+                if row > 0:
+                    position_on_top = tiles_by_id[puzzle[row -
+                                                         1, col]].set_position
+                if col > 0:
+                    position_on_left = tiles_by_id[puzzle[row,
+                                                          col-1]].set_position
                 for position in tile.positions:
                     found = False
-                    if np.array_equal(position_on_top.bot, position.top) \
-                            and np.array_equal(position_on_left.right, position.left):
+                    if (row == 0 or np.array_equal(position_on_top.bot, position.top)) \
+                            and (col == 0 or np.array_equal(position_on_left.right, position.left)) \
+                            and not (row == 0 and col == 0):
                         tile.set_position = position
                         remaining_tiles.remove(tile)
                         puzzle[row, col] = tile.id
@@ -93,12 +82,40 @@ def part02(tiles_text):
                         break
                 if found:
                     break
-    print(puzzle)
+    return puzzle
+
+
+def build_image(tiles_by_id, puzzle):
+    tiles_per_side = int(math.sqrt(len(tiles_by_id.keys())))
+    inner_content_size = tiles_by_id[puzzle[0, 0]
+                                     ].set_position.inner_content.shape[0]
+    img_side_len = tiles_per_side*inner_content_size
+    img = np.full((img_side_len, img_side_len), 'a')
+    for row in range(tiles_per_side):
+        for col in range(tiles_per_side):
+            img[row*inner_content_size:(row+1)*inner_content_size, col*inner_content_size:(
+                col+1) * inner_content_size] = tiles_by_id[puzzle[row, col]].set_position.inner_content
+
+    return img
+
+
+def rotate_and_flip_image(image):
+    images = []
+    for _ in range(4):
+        image = np.rot90(image)
+        images.append(image)
+
+    image = np.flipud(image)
+    for _ in range(4):
+        image = np.rot90(image)
+        images.append(image)
+
+    return images
 
 
 if __name__ == "__main__":
     with open("resources/input20.txt", "r") as f:
         tiles_text = f.read().split('\n\n')
 
-    # part01(tiles_text)
+    part01(tiles_text)
     part02(tiles_text)

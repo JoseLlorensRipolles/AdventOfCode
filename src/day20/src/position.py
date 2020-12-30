@@ -3,6 +3,7 @@ import numpy as np
 
 class Position:
     def __init__(self, position):
+        self.inner_content = position[1:-1, 1:-1]
         self.top = position[0, :]
         self.bot = position[-1, :]
         self.left = position[:, 0]
