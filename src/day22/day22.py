@@ -35,14 +35,15 @@ def part01(deck_1, deck_2):
 
 
 def play_recursive_combat(state, is_base_case=False):
-    previous_rounds = []
+    previous_rounds = set()
     deck_1 = state.deck_1
     deck_2 = state.deck_2
     while deck_1 and deck_2:
-        if state in previous_rounds:
+        hashable_state = (tuple(state.deck_1), tuple(state.deck_2))
+        if hashable_state in previous_rounds:
             return 1
         else:
-            previous_rounds.append(deepcopy(State(deck_1, deck_2)))
+            previous_rounds.add(hashable_state)
 
         draw_1 = deck_1.popleft()
         draw_2 = deck_2.popleft()
@@ -82,7 +83,6 @@ if __name__ == "__main__":
         puzzle_input = f.read()
 
     deck_1, deck_2 = build_decks(puzzle_input)
-
-    # part01(deck_1, deck_2)
+    part01(deck_1.copy(), deck_2.copy())
     state = State(deck_1, deck_2)
     play_recursive_combat(state, is_base_case=True)
